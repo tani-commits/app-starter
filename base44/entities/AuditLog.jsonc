@@ -1,0 +1,82 @@
+{
+  "name": "AuditLog",
+  "type": "object",
+  "description": "Immutable record of every action performed by a human or agent principal.",
+  "properties": {
+    "account_id": {
+      "type": "string",
+      "description": "Owning ClientAccount id (null for workspace-level actions)"
+    },
+    "action": {
+      "type": "string",
+      "description": "Action identifier, e.g. create, update, delete, move_deal_stage"
+    },
+    "entity_type": {
+      "type": "string",
+      "description": "Entity affected"
+    },
+    "entity_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "failure",
+        "pending_approval"
+      ],
+      "default": "success"
+    },
+    "actor_id": {
+      "type": "string",
+      "description": "User or Agent id that performed the action"
+    },
+    "actor_type": {
+      "type": "string",
+      "enum": [
+        "human",
+        "agent",
+        "system"
+      ],
+      "default": "human"
+    },
+    "actor_name": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object",
+      "default": {}
+    }
+  },
+  "required": [
+    "action",
+    "entity_type"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.account_id": {
+            "$in": "{{user.data.account_ids}}"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

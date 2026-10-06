@@ -1,0 +1,56 @@
+{
+  "name": "Event",
+  "type": "object",
+  "description": "A state-change event emitted on CRM mutations, consumable by agents and webhooks.",
+  "properties": {
+    "account_id": {
+      "type": "string",
+      "description": "Owning ClientAccount id"
+    },
+    "event_type": {
+      "type": "string",
+      "description": "e.g. created, updated, deleted, deal_won, project_created, task_completed"
+    },
+    "entity_type": {
+      "type": "string"
+    },
+    "entity_id": {
+      "type": "string"
+    },
+    "payload": {
+      "type": "object",
+      "default": {}
+    }
+  },
+  "required": [
+    "account_id",
+    "event_type"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.account_id": {
+            "$in": "{{user.data.account_ids}}"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

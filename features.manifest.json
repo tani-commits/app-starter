@@ -1,0 +1,285 @@
+{
+  "name": "app-starter",
+  "purpose": "Feature-guard starting point. Lists routes and actions that exist in this template. Add a row here when you add a module.",
+  "brand": {
+    "config": "app.config.json",
+    "env": [
+      "VITE_APP_NAME",
+      "VITE_APP_SHORT_NAME",
+      "VITE_APP_TAGLINE",
+      "VITE_APP_SUPPORT_EMAIL"
+    ]
+  },
+  "routes": [
+    {
+      "path": "/login",
+      "page": "src/pages/Login.jsx",
+      "auth": "public",
+      "status": "present"
+    },
+    {
+      "path": "/register",
+      "page": "src/pages/Register.jsx",
+      "auth": "public",
+      "status": "present"
+    },
+    {
+      "path": "/forgot-password",
+      "page": "src/pages/ForgotPassword.jsx",
+      "auth": "public",
+      "status": "present"
+    },
+    {
+      "path": "/reset-password",
+      "page": "src/pages/ResetPassword.jsx",
+      "auth": "public",
+      "status": "present"
+    },
+    {
+      "path": "/",
+      "page": "src/pages/Dashboard.jsx",
+      "auth": "staff",
+      "status": "present",
+      "views": ["loading", "empty", "error"]
+    },
+    {
+      "path": "/accounts",
+      "page": "src/pages/Accounts.jsx",
+      "auth": "staff",
+      "status": "present",
+      "action": "clientAccountActions",
+      "views": ["list", "delete-confirm"]
+    },
+    {
+      "path": "/accounts/new",
+      "page": "src/pages/AccountForm.jsx",
+      "auth": "staff",
+      "status": "present",
+      "action": "clientAccountActions",
+      "views": ["create"]
+    },
+    {
+      "path": "/accounts/:id",
+      "page": "src/pages/AccountDetail.jsx",
+      "auth": "staff",
+      "status": "present",
+      "action": "clientAccountActions",
+      "views": ["detail", "delete-confirm", "not-found"]
+    },
+    {
+      "path": "/accounts/:id/edit",
+      "page": "src/pages/AccountForm.jsx",
+      "auth": "staff",
+      "status": "present",
+      "action": "clientAccountActions",
+      "views": ["edit"]
+    },
+    {
+      "path": "/contacts",
+      "page": "src/pages/Contacts.jsx",
+      "auth": "staff",
+      "status": "present",
+      "action": "contactActions",
+      "views": ["list", "archive-undo"]
+    },
+    {
+      "path": "/contacts/new",
+      "page": "src/pages/ContactForm.jsx",
+      "auth": "staff",
+      "status": "present",
+      "action": "contactActions",
+      "views": ["create"]
+    },
+    {
+      "path": "/contacts/:id",
+      "page": "src/pages/ContactDetail.jsx",
+      "auth": "staff",
+      "status": "present",
+      "action": "contactActions",
+      "views": ["detail", "not-found"]
+    },
+    {
+      "path": "/contacts/:id/edit",
+      "page": "src/pages/ContactForm.jsx",
+      "auth": "staff",
+      "status": "present",
+      "action": "contactActions",
+      "views": ["edit"]
+    },
+    {
+      "path": "*",
+      "page": "src/lib/PageNotFound.jsx",
+      "auth": "public",
+      "status": "present"
+    }
+  ],
+  "pagesPresentButUnrouted": [
+    {
+      "file": "src/pages/Home.jsx",
+      "note": "Stage-1 session and account-scope check. Not mounted in src/App.jsx."
+    },
+    {
+      "file": "src/pages/OAuthConsent.jsx",
+      "note": "MCP OAuth consent page. Not mounted. base44/mcp/config.json (consent_path) was not in the hand copy."
+    }
+  ],
+  "navTargetsWithoutPages": [
+    { "path": "/leads", "label": "Leads", "backend": "leadActions" },
+    { "path": "/pipeline", "label": "Pipeline", "backend": "dealActions" },
+    { "path": "/deals", "label": "Deals", "backend": "dealActions" },
+    { "path": "/projects", "label": "Projects", "backend": "projectActions" },
+    { "path": "/tasks", "label": "Tasks", "backend": "taskActions" },
+    { "path": "/activities", "label": "Activities", "backend": "activityActions" },
+    { "path": "/onboarding", "label": "Onboarding", "backend": "onboardingActions" },
+    { "path": "/automations", "label": "Automations", "backend": "automationActions" },
+    { "path": "/content", "label": "Content", "backend": "generateContent" },
+    { "path": "/reports", "label": "Reports", "backend": null },
+    { "path": "/agents", "label": "Agents & Audit", "backend": "agentActions" },
+    { "path": "/settings", "label": "Settings", "backend": null },
+    { "path": "/search", "label": "Search", "backend": null, "note": "Topbar submits here. No search page was in the hand copy." }
+  ],
+  "actions": [
+    {
+      "name": "clientAccountActions",
+      "function": "base44/functions/clientAccountActions/entry.ts",
+      "entity": "base44/entities/ClientAccount.jsonc",
+      "via": "makeCrudHandler",
+      "actions": ["list", "get", "create", "update", "delete", "bulkDelete"]
+    },
+    {
+      "name": "contactActions",
+      "function": "base44/functions/contactActions/entry.ts",
+      "entity": "base44/entities/Contact.jsonc",
+      "via": "makeCrudHandler",
+      "actions": ["list", "get", "create", "update", "archive", "delete", "bulkDelete"]
+    },
+    {
+      "name": "leadActions",
+      "function": "base44/functions/leadActions/entry.ts",
+      "entity": "base44/entities/Lead.jsonc",
+      "via": "makeCrudHandler",
+      "actions": ["list", "get", "create", "update", "delete", "bulkDelete"]
+    },
+    {
+      "name": "dealActions",
+      "function": "base44/functions/dealActions/entry.ts",
+      "entity": "base44/entities/Deal.jsonc",
+      "via": "makeCrudHandler",
+      "actions": ["list", "get", "create", "update", "delete", "bulkDelete"]
+    },
+    {
+      "name": "projectActions",
+      "function": "base44/functions/projectActions/entry.ts",
+      "entity": "base44/entities/Project.jsonc",
+      "via": "makeCrudHandler",
+      "actions": ["list", "get", "create", "update", "delete", "bulkDelete"]
+    },
+    {
+      "name": "taskActions",
+      "function": "base44/functions/taskActions/entry.ts",
+      "entity": "base44/entities/Task.jsonc",
+      "via": "makeCrudHandler",
+      "actions": ["list", "get", "create", "update", "archive", "delete", "bulkDelete"]
+    },
+    {
+      "name": "activityActions",
+      "function": "base44/functions/activityActions/entry.ts",
+      "entity": "base44/entities/Activity.jsonc",
+      "via": "makeCrudHandler",
+      "actions": ["list", "get", "create", "delete", "bulkDelete"]
+    },
+    {
+      "name": "onboardingActions",
+      "function": "base44/functions/onboardingActions/entry.ts",
+      "entity": "base44/entities/Onboarding.jsonc",
+      "via": "makeCrudHandler",
+      "actions": ["list", "get", "create", "update", "delete", "bulkDelete"]
+    },
+    {
+      "name": "automationActions",
+      "function": "base44/functions/automationActions/entry.ts",
+      "entity": "base44/entities/Automation.jsonc",
+      "via": "makeCrudHandler",
+      "actions": ["list", "get", "create", "update", "delete", "bulkDelete"]
+    },
+    {
+      "name": "agentActions",
+      "function": "base44/functions/agentActions/entry.ts",
+      "entity": "base44/entities/Agent.jsonc",
+      "actions": ["list", "get", "create", "update", "delete", "rotateKey"]
+    },
+    {
+      "name": "moveDealStage",
+      "function": "base44/functions/moveDealStage/entry.ts",
+      "actions": ["invoke"]
+    },
+    {
+      "name": "assignTask",
+      "function": "base44/functions/assignTask/entry.ts",
+      "actions": ["invoke"]
+    },
+    {
+      "name": "createProjectFromDeal",
+      "function": "base44/functions/createProjectFromDeal/entry.ts",
+      "actions": ["invoke"]
+    },
+    {
+      "name": "logActivity",
+      "function": "base44/functions/logActivity/entry.ts",
+      "actions": ["invoke"]
+    },
+    {
+      "name": "runAutomation",
+      "function": "base44/functions/runAutomation/entry.ts",
+      "actions": ["invoke"],
+      "approval": true
+    },
+    {
+      "name": "importLeads",
+      "function": "base44/functions/importLeads/entry.ts",
+      "actions": ["invoke"]
+    },
+    {
+      "name": "enrichContact",
+      "function": "base44/functions/enrichContact/entry.ts",
+      "actions": ["invoke"]
+    },
+    {
+      "name": "generateContent",
+      "function": "base44/functions/generateContent/entry.ts",
+      "actions": ["invoke"]
+    },
+    {
+      "name": "approvalActions",
+      "function": "base44/functions/approvalActions/entry.ts",
+      "entity": "base44/entities/ApprovalRequest.jsonc",
+      "actions": ["list", "approve", "reject"]
+    },
+    {
+      "name": "auditActions",
+      "function": "base44/functions/auditActions/entry.ts",
+      "entity": "base44/entities/AuditLog.jsonc",
+      "actions": ["list"]
+    },
+    {
+      "name": "actionsCatalog",
+      "function": "base44/functions/actionsCatalog/entry.ts",
+      "actions": ["get"],
+      "notes": "Returns base44/shared/catalog.ts"
+    }
+  ],
+  "entitiesWithoutDedicatedUi": [
+    "Lead",
+    "Deal",
+    "Project",
+    "Task",
+    "Activity",
+    "Onboarding",
+    "Automation",
+    "Agent",
+    "Event",
+    "AuditLog",
+    "ApprovalRequest",
+    "User"
+  ]
+}

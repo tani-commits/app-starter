@@ -1,0 +1,125 @@
+{
+  "name": "Automation",
+  "type": "object",
+  "description": "A configurable rule that triggers an action on a CRM event, runnable by agents (approval-gated).",
+  "properties": {
+    "account_id": {
+      "type": "string",
+      "description": "Owning ClientAccount id"
+    },
+    "name": {
+      "type": "string"
+    },
+    "trigger": {
+      "type": "string",
+      "description": "Event that fires this automation, e.g. deal_won, task_completed"
+    },
+    "conditions": {
+      "type": "object",
+      "default": {},
+      "description": "Optional match criteria on the event payload"
+    },
+    "action_type": {
+      "type": "string",
+      "description": "e.g. create_project, create_task, send_note"
+    },
+    "action_config": {
+      "type": "object",
+      "default": {}
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    },
+    "last_run_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "account_id",
+    "name",
+    "trigger",
+    "action_type"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.account_id": {
+            "$in": "{{user.data.account_ids}}"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$and": [
+        {
+          "data.account_id": {
+            "$in": "{{user.data.account_ids}}"
+          }
+        },
+        {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "manager"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "update": {
+      "$and": [
+        {
+          "data.account_id": {
+            "$in": "{{user.data.account_ids}}"
+          }
+        },
+        {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "manager"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "delete": {
+      "$and": [
+        {
+          "data.account_id": {
+            "$in": "{{user.data.account_ids}}"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

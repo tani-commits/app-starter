@@ -1,0 +1,166 @@
+{
+  "name": "Activity",
+  "type": "object",
+  "description": "An audit-trail event on a CRM entity, scoped to a ClientAccount. Records human or agent actions.",
+  "properties": {
+    "account_id": {
+      "type": "string",
+      "description": "Owning ClientAccount id"
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "contact",
+        "lead",
+        "deal",
+        "project",
+        "task",
+        "account",
+        "agent"
+      ]
+    },
+    "entity_id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "note",
+        "email",
+        "call",
+        "meeting",
+        "status_change",
+        "creation",
+        "update",
+        "delete",
+        "automation",
+        "enrichment",
+        "approval"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "actor_id": {
+      "type": "string",
+      "description": "User or Agent id that performed the action"
+    },
+    "actor_type": {
+      "type": "string",
+      "enum": [
+        "human",
+        "agent",
+        "system"
+      ],
+      "default": "human"
+    },
+    "actor_name": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object",
+      "default": {}
+    }
+  },
+  "required": [
+    "account_id",
+    "entity_type",
+    "entity_id",
+    "type"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.account_id": {
+            "$in": "{{user.data.account_ids}}"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$and": [
+        {
+          "data.account_id": {
+            "$in": "{{user.data.account_ids}}"
+          }
+        },
+        {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "manager"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "member"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "agent"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "update": {
+      "$and": [
+        {
+          "data.account_id": {
+            "$in": "{{user.data.account_ids}}"
+          }
+        },
+        {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "manager"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "delete": {
+      "$and": [
+        {
+          "data.account_id": {
+            "$in": "{{user.data.account_ids}}"
+          }
+        },
+        {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "manager"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

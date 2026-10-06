@@ -1,0 +1,111 @@
+{
+  "name": "ApprovalRequest",
+  "type": "object",
+  "description": "A high-impact or destructive action routed for human approval before execution.",
+  "properties": {
+    "account_id": {
+      "type": "string",
+      "description": "Owning ClientAccount id"
+    },
+    "action_type": {
+      "type": "string",
+      "description": "e.g. delete:ClientAccount, bulkDelete, runAutomation"
+    },
+    "payload": {
+      "type": "object",
+      "default": {},
+      "description": "Stored input to execute on approval"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "expired",
+        "executed"
+      ],
+      "default": "pending"
+    },
+    "requested_by_id": {
+      "type": "string"
+    },
+    "requested_by_type": {
+      "type": "string",
+      "enum": [
+        "human",
+        "agent",
+        "system"
+      ],
+      "default": "human"
+    },
+    "requested_by_name": {
+      "type": "string"
+    },
+    "resolved_by_id": {
+      "type": "string"
+    },
+    "resolved_by_name": {
+      "type": "string"
+    },
+    "resolution_notes": {
+      "type": "string"
+    },
+    "resolved_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "account_id",
+    "action_type"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.account_id": {
+            "$in": "{{user.data.account_ids}}"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {},
+    "update": {
+      "$and": [
+        {
+          "data.account_id": {
+            "$in": "{{user.data.account_ids}}"
+          }
+        },
+        {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "manager"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

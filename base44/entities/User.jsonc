@@ -1,0 +1,30 @@
+{
+  "name": "User",
+  "type": "object",
+  "description": "A workspace user. Role and account_ids drive multi-tenant access enforced by RLS on every CRM entity.",
+  "properties": {
+    "role": {
+      "type": "string",
+      "description": "The role of the user in the app",
+      "enum": [
+        "admin",
+        "manager",
+        "member",
+        "client",
+        "agent"
+      ],
+      "default": "member"
+    },
+    "account_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "ClientAccount ids this user is authorized to access. Admins bypass this scope."
+    }
+  },
+  "required": [
+    "role"
+  ]
+}

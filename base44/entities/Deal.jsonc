@@ -1,0 +1,166 @@
+{
+  "name": "Deal",
+  "type": "object",
+  "description": "A sales opportunity scoped to a ClientAccount.",
+  "properties": {
+    "account_id": {
+      "type": "string",
+      "description": "Owning ClientAccount id"
+    },
+    "contact_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "value": {
+      "type": "number",
+      "default": 0
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "new",
+        "qualified",
+        "proposal",
+        "negotiation",
+        "won",
+        "lost"
+      ],
+      "default": "new"
+    },
+    "probability": {
+      "type": "number",
+      "default": 0,
+      "description": "0-100 win probability"
+    },
+    "owner_id": {
+      "type": "string",
+      "description": "User id responsible"
+    },
+    "expected_close_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Project created when deal is won"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "account_id",
+    "title"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.account_id": {
+            "$in": "{{user.data.account_ids}}"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$and": [
+        {
+          "data.account_id": {
+            "$in": "{{user.data.account_ids}}"
+          }
+        },
+        {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "manager"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "member"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "agent"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "update": {
+      "$and": [
+        {
+          "data.account_id": {
+            "$in": "{{user.data.account_ids}}"
+          }
+        },
+        {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "manager"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "member"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "agent"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "delete": {
+      "$and": [
+        {
+          "data.account_id": {
+            "$in": "{{user.data.account_ids}}"
+          }
+        },
+        {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "manager"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

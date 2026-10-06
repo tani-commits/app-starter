@@ -1,0 +1,115 @@
+{
+  "name": "ClientAccount",
+  "type": "object",
+  "description": "A tenant client account. All CRM records are scoped to one ClientAccount.",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Account / company name"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "inactive"
+      ],
+      "default": "active"
+    },
+    "industry": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "owner_id": {
+      "type": "string",
+      "description": "User id of the account owner"
+    },
+    "member_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "User ids authorized for this account (denormalized for convenience)"
+    },
+    "plan": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "growth",
+        "enterprise"
+      ],
+      "default": "starter"
+    },
+    "settings": {
+      "type": "object",
+      "default": {}
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "id": {
+            "$in": "{{user.data.account_ids}}"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "$and": [
+            {
+              "id": {
+                "$in": "{{user.data.account_ids}}"
+              }
+            },
+            {
+              "$or": [
+                {
+                  "user_condition": {
+                    "role": "manager"
+                  }
+                },
+                {
+                  "user_condition": {
+                    "role": "member"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

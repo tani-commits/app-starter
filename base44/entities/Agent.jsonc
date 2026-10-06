@@ -1,0 +1,84 @@
+{
+  "name": "Agent",
+  "type": "object",
+  "description": "A scoped service account that operates the CRM via the action layer. Stores its authorized ClientAccount scope, permissions, and a hashed API key.",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Human-readable service account name"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    },
+    "account_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "ClientAccount ids this agent is authorized to access"
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Scoped capabilities, e.g. read:contacts, write:tasks, run:enrichment"
+    },
+    "api_key_hash": {
+      "type": "string",
+      "description": "SHA-256 hash of the agent API key (plaintext returned only once on creation/rotation)"
+    },
+    "api_key_ref": {
+      "type": "string",
+      "description": "Optional label/reference for the key"
+    },
+    "last_used_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "manager"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
